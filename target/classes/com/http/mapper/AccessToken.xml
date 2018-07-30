@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.AccessTokenDao">
+	<resultMap type="com.http.model.AccessToken" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="token" column="token"/> 
+		<result property="expiresIn" column="expiresIn"/> 
+		<result property="appId" column="appId"/>
+		<result property="createTime" column="createTime"/>
+		<result property="state" column="state"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, token, expiresIn, appId
+	</sql>
+	 
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from access_token where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM access_token where 1=1 
+		
+		<if test="appId!=null and appId!=''">
+			 and appId = #{appId}
+		</if>
+		
+		order by id desc
+		LIMIT 0,1
+	</select>
+	
+	<select id="queryCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    	 
+        SELECT count(*) FROM access_token WHERE 1=1
+        
+       <if test="shopName!=null and shopName!=''">
+			 and shop_name like CONCAT('%','${shopName}','%' )
+		</if>
+		<if test="shopUrl!=null and shopUrl!=''">
+			 and shop_url like CONCAT('%','${shopUrl}','%' )  
+		</if>
+          
+    </select>
+	 
+	<insert id="insert" parameterType="com.http.model.AccessToken" 
+		 keyProperty="id">
+		INSERT INTO access_token (token,expiresIn,appId,createTime,state) VALUES (#{token},#{expiresIn},#{appId},#{createTime},#{state})
+	</insert>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from access_token where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM tbl_tmall_shop_info
+	</select>
+	
+</mapper>

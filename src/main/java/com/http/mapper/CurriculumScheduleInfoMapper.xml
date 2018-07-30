@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.CurriculumScheduleInfoDao">
+	<resultMap type="com.http.model.CurriculumScheduleInfo" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="curriculumId" column="curriculum_id"/> 
+		<result property="curriculumName" column="curriculum_name"/>
+		<result property="firstTime" column="first_time"/>
+		<result property="weekDay" column="week_day"/>
+	    <result property="startTime" column="start_time"/>
+	    <result property="endTime" column="end_time"/>
+	    <result property="remindingTime" column="reminding_time"/>
+	    <result property="remindingType" column="reminding_type"/>
+	    <result property="score" column="score"/>
+	    <result property="place" column="place"/>
+	    <result property="memorandum" column="memorandum"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	    <result property="operateUuid" column="operate_uuid"/>
+	    <result property="scheduleInfoColor" column="scheduleInfo_color"/>
+	    <result property="scheduleInfoNum" column="scheduleInfo_num"/>
+	    <result property="scheduleInfoDay" column="scheduleInfo_day"/>
+	    <result property="locationAddress" column="location_address"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, curriculum_id, curriculum_name, first_time, week_day, start_time, end_time, reminding_time, reminding_type,
+		score, place, memorandum, create_time, operate_time, state, operate_uuid, scheduleInfo_color, scheduleInfo_num, scheduleInfo_day, location_address
+	</sql>
+	
+	<sql id="scheduleInfoColumns">
+		wcs.id, wcs.uuid, wcs.curriculum_id, wcs.curriculum_name, wcs.first_time, wcs.week_day, wcs.start_time, wcs.end_time, wcs.reminding_time, wcs.reminding_type,
+		wcs.score, wcs.place, wcs.memorandum, wcs.create_time, wcs.operate_time, wcs.state, wcs.operate_uuid, wcs.scheduleInfo_color, wcs.scheduleInfo_num, wcs.scheduleInfo_day, wcs.location_address
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_curriculum_schedule where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_curriculum_schedule where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		SELECT * FROM wechat_curriculum_schedule where state = 0
+		<if test="id!=null and id!=''">
+			 and id = #{id}
+		</if>
+	</select>
+	
+	<select id="queryScheduleInfoList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		SELECT <include refid="scheduleInfoColumns" /> FROM wechat_curriculum_schedule wcs
+           LEFT JOIN wechat_calendar_curriculum wcc ON wcs.curriculum_id = wcc.id
+           LEFT JOIN wechat_calendar_child cwc ON wcc.calendar_child_id = cwc.id
+           where wcs.state = 0 and wcc.state != 1 and cwc.state = 0
+           
+		   <if test="childId!=null and childId!=''">
+				 and cwc.id = #{childId}
+		   </if>
+		    <if test="curriculumName!=null and curriculumName!=''">
+				 and wcc.curriculum_name = #{curriculumName}
+		   </if>
+		    <if test="startTime!=null and startTime!=''">
+				 and wcs.first_time BETWEEN #{startTime} AND #{endTime}
+
+		   </if>
+		   <if test="startHour!=null and startHour!=''">
+				 AND wcs.start_time  &lt; #{endHour} AND wcs.end_time &gt; #{startHour}
+
+		   </if>
+		   
+		   order by wcs.first_time desc,wcs.end_time desc
+	</select>
+	
+	<select id="pointScheduleInfoList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		SELECT <include refid="scheduleInfoColumns" /> FROM wechat_curriculum_schedule wcs
+           LEFT JOIN wechat_calendar_curriculum wcc ON wcs.curriculum_id = wcc.id
+           LEFT JOIN wechat_calendar_child cwc ON wcc.calendar_child_id = cwc.id
+           where wcs.state = 0 and wcc.state != 1 and cwc.state = 0
+           
+		   <if test="childId!=null and childId!=''">
+				 and cwc.id = #{childId}
+		   </if>
+		    <if test="curriculumName!=null and curriculumName!=''">
+				 and wcc.curriculum_name = #{curriculumName}
+		   </if>
+		   <if test="startTime!=null and startTime!=''">
+				 and wcs.first_time = #{startTime}
+
+		   </if>
+		   <if test="startHour!=null and startHour!=''">
+				 AND wcs.start_time  &lt;= #{startHour} AND wcs.end_time &gt;= #{startHour}
+
+		   </if>
+		   
+		   order by wcs.first_time desc,wcs.end_time desc
+	</select>
+	
+	<select id="screenScheduleInfoList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		SELECT <include refid="scheduleInfoColumns" /> FROM wechat_curriculum_schedule wcs
+           LEFT JOIN wechat_calendar_curriculum wcc ON wcs.curriculum_id = wcc.id
+           LEFT JOIN wechat_calendar_child cwc ON wcc.calendar_child_id = cwc.id
+           where wcs.state = 0 and wcc.state != 1 and cwc.state = 0
+           
+		   <if test="childId!=null and childId!=''">
+				 and cwc.id = #{childId}
+		   </if>
+		    <if test="curriculumName!=null and curriculumName!=''">
+				 and wcs.curriculum_name = #{curriculumName}
+		   </if>
+		    <if test="startTime!=null and startTime!=''">
+				 and wcs.first_time = #{startTime} 
+
+		   </if>
+		   
+		   order by wcs.first_time asc,wcs.end_time asc
+	</select>
+	
+	<select id="screenNotTodayScheduleInfoList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		SELECT <include refid="scheduleInfoColumns" /> FROM wechat_curriculum_schedule wcs
+           LEFT JOIN wechat_calendar_curriculum wcc ON wcs.curriculum_id = wcc.id
+           LEFT JOIN wechat_calendar_child cwc ON wcc.calendar_child_id = cwc.id
+           where wcs.state = 0 and wcc.state != 1 and cwc.state = 0
+           
+		   <if test="childId!=null and childId!=''">
+				 and cwc.id = #{childId}
+		   </if>
+		    <if test="curriculumName!=null and curriculumName!=''">
+				 and wcs.curriculum_name = #{curriculumName}
+		   </if>
+		    <if test="startTime!=null and startTime!=''">
+				 and wcs.first_time &gt; #{startTime} 
+
+		   </if>
+		   
+		   order by wcs.first_time asc
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_curriculum_schedule where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_curriculum_schedule
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		select * from wechat_curriculum_schedule where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_curriculum_schedule where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<select id="updateListByOperateUuid"  resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleInfo">
+		update wechat_curriculum_schedule set state = 1 where 1=1
+		   <if test="operateUuid!=null and operateUuid!=''">
+				 and operate_uuid = #{operateUuid}
+		   </if>
+		   <if test="firstTime!=null and firstTime!=''">
+				 and first_time &gt;= #{firstTime}
+		   </if>
+	</select>
+	
+	<update id="update" parameterType="com.http.model.CurriculumScheduleInfo">
+		update wechat_curriculum_schedule 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="curriculumId != null">curriculum_id = #{curriculumId}, </if>
+			<if test="curriculumName != null">curriculum_name = #{curriculumName}, </if>
+			<if test="firstTime != null">first_time = #{firstTime}, </if>
+			<if test="weekDay != null">week_day = #{weekDay}, </if>
+			<if test="startTime != null">start_time = #{startTime}, </if>
+			<if test="endTime != null">end_time = #{endTime}, </if>
+			<if test="remindingTime != null">reminding_time = #{remindingTime}, </if>
+			<if test="remindingType != null">reminding_type = #{remindingType}, </if>
+			<if test="score != null">score = #{score}, </if>
+			<if test="place != null">place = #{place}, </if>
+			<if test="memorandum != null">memorandum = #{memorandum}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			<if test="scheduleInfoColor != null">scheduleInfo_color = #{scheduleInfoColor}, </if>
+			<if test="scheduleInfoNum != null">scheduleInfo_num = #{scheduleInfoNum}, </if>
+			<if test="scheduleInfoDay != null">scheduleInfo_day = #{scheduleInfoDay}, </if>
+			<if test="locationAddress != null">location_address = #{locationAddress}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	
+	<update id="updateCsInfoList" parameterType="com.http.model.CurriculumScheduleInfo">
+		update wechat_curriculum_schedule set state = 1
+		where operate_uuid = #{operateUuid}
+		 <if test="startTime!=null and startTime!=''">
+				 and first_time &gt;= #{startTime}
+		 </if>
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.CurriculumScheduleInfo" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_curriculum_schedule ( uuid, curriculum_id, curriculum_name, first_time, week_day, start_time, end_time, reminding_time, reminding_type,
+		       score, place, memorandum, create_time, operate_time, state, operate_uuid, scheduleInfo_color, scheduleInfo_num, scheduleInfo_day, location_address
+		)
+		values ( #{uuid}, #{curriculumId}, #{curriculumName}, #{firstTime}, #{weekDay}, #{startTime}, #{endTime}, #{remindingTime}, #{remindingType}, 
+		      #{score}, #{place}, #{memorandum}, #{createTime}, #{operateTime}, #{state}, #{operateUuid}, #{scheduleInfoColor}, #{scheduleInfoNum}, #{scheduleInfoDay}, #{locationAddress}
+		)
+	</insert>
+	
+	<insert id="saveList" parameterType="java.util.ArrayList" >
+		insert into wechat_curriculum_schedule ( uuid, curriculum_id, curriculum_name, first_time, week_day, start_time, end_time, reminding_time, reminding_type,
+		       score, place, memorandum, create_time, operate_time, state, operate_uuid, scheduleInfo_color, scheduleInfo_num, scheduleInfo_day, location_address
+		)
+		values 
+        <foreach item="item" collection="list"  separator="," >  
+          ( #{item.uuid}, #{item.curriculumId}, #{item.curriculumName}, #{item.firstTime}, #{item.weekDay}, #{item.startTime}, #{item.endTime}, #{item.remindingTime}, #{item.remindingType}, 
+		      #{item.score}, #{item.place}, #{item.memorandum}, #{item.createTime}, #{item.operateTime}, #{item.state}, #{item.operateUuid}, #{item.scheduleInfoColor} , #{item.scheduleInfoNum}, #{item.scheduleInfoDay}, #{item.locationAddress} 
+		)
+        </foreach>
+	</insert>
+	
+</mapper>

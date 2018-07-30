@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.CurriculumScheduleTaskDao">
+	<resultMap type="com.http.model.CurriculumScheduleTask" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="scheduleId" column="schedule_id"/>
+		<result property="curriculumId" column="curriculum_id"/>  
+		<result property="curriculumName" column="curriculum_name"/>
+		<result property="toUser" column="to_user"/>
+		<result property="templateId" column="template_id"/>
+		<result property="message" column="message"/>
+		<result property="place" column="place"/>
+	    <result property="startTime" column="start_time"/>
+	    <result property="endTime" column="end_time"/>
+	    <result property="sendTime" column="send_time"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	    <result property="operateUuid" column="operate_uuid"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, schedule_id, curriculum_id, curriculum_name, to_user, template_id, message, place, start_time, end_time, send_time,
+		create_time, operate_time, state, operate_uuid
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_curriculum_schedule_task where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_curriculum_schedule_task where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_curriculum_schedule_task where state = 0
+		 
+		<if test="accountName!=null and accountName!=''">
+			 and account_name like CONCAT('%','${accountName}','%' )
+		</if>
+	</select>
+	
+	<select id="updateCurriculumScheduleByUuid" resultMap="resultMap" parameterType="java.util.Map">
+		update wechat_curriculum_schedule_task set state = 1  where 1=1
+		  
+		<if test="uuid!=null and uuid!=''">
+			 and uuid = #{uuid}
+		</if>
+	</select>
+	
+	<select id="queryTaskList" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleTask">
+		SELECT * FROM wechat_curriculum_schedule_task where state = 0
+		<if test="startTime!=null and startTime!=''">
+			 and send_time BETWEEN #{startTime} AND #{endTime}
+		</if>
+		
+	</select>
+	
+	<select id="queryByScheduleId" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleTask">
+		SELECT * FROM wechat_curriculum_schedule_task where state = 0
+		<if test="scheduleId!=null and scheduleId!=''">
+			 and schedule_id = #{scheduleId}
+		</if>
+		
+	</select>
+	
+	<select id="updateListByOperateUuid" resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleTask">
+		update wechat_curriculum_schedule_task set state = 1 where 1=1
+		<if test="operateUuid!=null and operateUuid!=''">
+			 and operate_uuid = #{operateUuid}
+		</if>
+		
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_curriculum_schedule_task where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_curriculum_schedule_task
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.CurriculumScheduleTask">
+		select * from wechat_curriculum_schedule_task where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_curriculum_schedule_task where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	
+	<update id="update" parameterType="com.http.model.CurriculumScheduleTask">
+		update wechat_curriculum_schedule_task 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="scheduleId != null">schedule_id = #{scheduleId}, </if>
+			<if test="curriculumId != null">curriculum_id = #{curriculumId}, </if>
+			<if test="curriculumName != null">curriculum_name = #{curriculumName}, </if>
+			<if test="toUser != null">to_user = #{toUser}, </if>
+			<if test="templateId != null">template_id = #{templateId}, </if>
+			<if test="message != null">message = #{message}, </if>
+			<if test="place != null">message = #{place}, </if>
+			<if test="startTime != null">start_time = #{startTime}, </if>
+			<if test="endTime != null">end_time = #{endTime}, </if>
+			<if test="sendTime != null">send_time = #{sendTime}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	<update id="updateCsTaskList" parameterType="com.http.model.CurriculumScheduleTask">
+		update wechat_curriculum_schedule_task set state = 1
+		where operate_uuid = #{operateUuid}
+		<if test="startTime!=null and startTime!=''">
+				 and send_time &gt;= #{startTime}
+		 </if>
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.CurriculumScheduleTask" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_curriculum_schedule_task ( uuid, schedule_id, curriculum_id, curriculum_name, to_user, template_id, message, place, start_time, end_time,
+		       send_time,create_time, operate_time, state, operate_uuid
+		)
+		values ( #{uuid}, #{scheduleId}, #{curriculumId}, #{curriculumName}, #{toUser}, #{templateId}, #{message}, #{place}, #{startTime}, #{endTime},
+		         #{sendTime}, #{createTime}, #{operateTime}, #{state}, #{operateUuid}
+		)
+	</insert>
+	
+	<insert id="saveList" parameterType="java.util.ArrayList" >
+		insert into wechat_curriculum_schedule_task ( uuid, schedule_id, curriculum_id, curriculum_name, to_user, template_id, message, place, start_time, end_time,
+		       send_time,create_time, operate_time, state, operate_uuid
+		)
+		values 
+        <foreach item="item" collection="list"  separator="," >  
+          ( #{item.uuid}, #{item.scheduleId}, #{item.curriculumId}, #{item.curriculumName}, #{item.toUser}, #{item.templateId}, #{item.message}, #{item.place}, #{item.startTime}, #{item.endTime},
+		         #{item.sendTime}, #{item.createTime}, #{item.operateTime}, #{item.state}, #{item.operateUuid}
+		)
+        </foreach>
+	</insert>
+	
+</mapper>

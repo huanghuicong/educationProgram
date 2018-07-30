@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.CalendarBasicInfoDao">
+	<resultMap type="com.http.model.CalendarBasicInfo" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="openId" column="open_id"/> 
+		<result property="weChatHeadPortrait" column="wechat_head_portrait"/>
+		<result property="weChatName" column="wechat_name"/>
+	    <result property="weChatMobile" column="wechat_mobile"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	    <result property="locationAddress" column="location_address"/>
+	    <result property="lastLoginTime" column="last_login_time"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, open_id, wechat_head_portrait,  wechat_name, wechat_mobile, create_time, operate_time, state, location_address, last_login_time
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_calendar_user where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_calendar_user where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_calendar_user where state = 0
+		 
+		<if test="accountName!=null and accountName!=''">
+			 and account_name like CONCAT('%','${accountName}','%' )
+		</if>
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_calendar_user where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM tbl_calendar_user
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.CalendarBasicInfo">
+		select * from wechat_calendar_user where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<select id="queryLastLoginByObject"  resultMap="resultMap" parameterType="com.http.model.CalendarBasicInfo">
+		select * from wechat_calendar_user where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+		   <if test="lastLoginTime!=null and lastLoginTime!=''">
+				 and last_login_time like CONCAT('%','${lastLoginTime}','%' )
+		   </if>
+	</select>
+	
+	<select id="findAccountList" resultMap="resultMap" parameterType="com.http.model.CalendarBasicInfo">
+		SELECT * FROM wechat_calendar_user t
+              LEFT JOIN (SELECT * FROM tbl_activity_info tai WHERE tai.state = 0 GROUP BY tai.tbl_account_id ) ta ON t.id = ta.tbl_account_id
+              LEFT JOIN (SELECT * FROM tbl_curriculum_info tci WHERE tci.state = 0 GROUP BY tci.tbl_account_id ) tc ON t.id = tc.tbl_account_id 
+             WHERE 1 = 1 AND t.state = 0
+			<if test="accountType!=null and accountType!=''">
+				 and t.account_type = #{accountType}
+			</if>
+			<if test="businessAreas!=null and businessAreas!=''">
+				 and t.business_areas = #{businessAreas}
+			</if>
+			<if test="localAdcode!=null and localAdcode!=''">
+				 and t.local_adcode = #{localAdcode}
+			</if>
+			<if test="localAdcode!=null and localAdcode!=''">
+				 and t.local_adcode = #{localAdcode}
+			</if>
+			<if test="orderCreateTime!=null and orderCreateTime!=''">
+				 order by t.create_time DESC
+			</if>
+			<if test="orderDefaultScore!=null and orderDefaultScore!=''">
+				 order by t.default_score DESC
+			</if>
+			
+	</select>
+	
+	<update id="update" parameterType="com.http.model.CalendarBasicInfo">
+		update wechat_calendar_user 
+		
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="openId != null">open_id = #{openId}, </if>
+			<if test="weChatHeadPortrait != null">wechat_head_portrait = #{weChatHeadPortrait}, </if>
+			<if test="weChatName != null">wechat_name = #{weChatName}, </if>
+			<if test="weChatMobile != null">wechat_mobile = #{weChatMobile}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			<if test="locationAddress != null">location_address = #{locationAddress}, </if>
+			<if test="lastLoginTime != null">last_login_time = #{lastLoginTime}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		
+		where open_id = #{openId}
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.CalendarBasicInfo" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_calendar_user ( uuid, open_id, wechat_head_portrait,  wechat_name, wechat_mobile,
+		                               create_time, operate_time, state, location_address, last_login_time
+		)
+		values ( #{uuid}, #{openId}, #{weChatHeadPortrait}, #{weChatName}, #{weChatMobile},
+		         #{createTime}, #{operateTime}, #{state}, #{locationAddress}, #{lastLoginTime}
+		)
+	</insert>
+	
+</mapper>

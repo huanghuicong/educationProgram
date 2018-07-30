@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.WeChatUserFormIdDao">
+	<resultMap type="com.http.model.WeChatUserFormId" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="openId" column="open_id"/>
+		<result property="formId" column="form_id"/>
+		<result property="templateId" column="template_id"/>  
+		<result property="message" column="message"/>
+		<result property="sendTime" column="send_time"/>
+		<result property="failureTime" column="failure_time"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, open_id, form_id, template_id, message, send_time, failure_time,
+		create_time, operate_time, state
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_user_form_id where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_user_form_id where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_user_form_id where state = 0
+		 
+		<if test="accountName!=null and accountName!=''">
+			 and account_name like CONCAT('%','${accountName}','%' )
+		</if>
+	</select>
+	
+	<select id="queryObjectFormIdList" resultMap="resultMap" parameterType="com.http.model.WeChatUserFormId">
+		SELECT * FROM wechat_user_form_id where state = 0
+		<if test="openId!=null and openId!=''">
+			 and open_id = #{openId}
+		</if>
+		
+		order by id asc
+		limit 0,1
+	</select>
+	
+	<select id="queryExpireFormIdList" resultMap="resultMap" parameterType="com.http.model.WeChatUserFormId">
+		SELECT * FROM wechat_user_form_id where state = 0
+		<if test="failureTime!=null and failureTime!=''">
+			 and failure_time like CONCAT('%','${failureTime}','%' )
+		</if>
+		<if test="openId!=null and openId!=''">
+			 and open_id = #{openId}
+		</if>
+		order by create_time asc
+	</select>
+	
+	<select id="updateExpireFormIdList" resultMap="resultMap" parameterType="com.http.model.WeChatUserFormId">
+		update wechat_user_form_id set state = 1 where 1=1
+		<if test="failureTime!=null and failureTime!=''">
+			 and failure_time like CONCAT('%','${failureTime}','%' )
+		</if>
+	</select>
+	
+	<select id="updateExpireFormIdByUuid" resultMap="resultMap" parameterType="com.http.model.WeChatUserFormId">
+		update wechat_user_form_id set state = 1 where 1=1
+		<if test="uuid!=null and uuid!=''">
+			 and uuid = #{uuid}
+		</if>
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_user_form_id where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_user_form_id
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.WeChatUserFormId">
+		select * from wechat_user_form_id where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_user_form_id where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	
+	<update id="update" parameterType="com.http.model.WeChatUserFormId">
+		update wechat_user_form_id 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="openId != null">open_id = #{openId}, </if>
+			<if test="formId != null">form_id = #{formId}, </if>
+			<if test="templateId != null">template_id = #{templateId}, </if>
+			<if test="message != null">message = #{message}, </if>
+			<if test="sendTime != null">send_time = #{sendTime}, </if>
+			<if test="failureTime != null">failure_time = #{failureTime}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.WeChatUserFormId" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_user_form_id ( uuid, open_id, form_id, template_id, message,
+		       send_time, failure_time, create_time, operate_time, state
+		)
+		values ( #{uuid}, #{openId}, #{formId}, #{templateId}, #{message},
+		         #{sendTime}, #{failureTime}, #{createTime}, #{operateTime}, #{state}
+		)
+	</insert>
+	
+	<insert id="saveList" parameterType="java.util.ArrayList" >
+		insert into wechat_user_form_id ( uuid, open_id, form_id, template_id, message,
+		       send_time, failure_time, create_time, operate_time, state
+		)
+		values 
+        <foreach item="item" collection="list"  separator="," >  
+          (  #{item.uuid}, #{item.openId}, #{item.formId}, #{item.templateId}, #{item.message},
+		         #{item.sendTime}, #{item.failureTime}, #{item.createTime}, #{item.operateTime}, #{item.state}
+		)
+        </foreach>
+	</insert>
+	
+</mapper>

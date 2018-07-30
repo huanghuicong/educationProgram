@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.SmsInfoDao">
+	<resultMap type="com.http.model.SmsInfo" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="mobile" column="mobile"/>
+		<result property="signName" column="sign_name"/>
+		<result property="templateCode" column="template_code"/>  
+		<result property="smsCode" column="sms_code"/>
+		<result property="smsMessage" column="sms_message"/>
+		<result property="sendTime" column="send_time"/>
+		<result property="failureTime" column="failure_time"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, mobile, sign_name, template_code, sms_code, sms_message, send_time,
+		failure_time, create_time, create_time, state
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from tbl_sms_info where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from tbl_sms_info where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="com.http.model.SmsInfo">
+		SELECT * FROM tbl_sms_info t where state = 0
+		<if test="uuid!=null and uuid!=''">
+				 and t.uuid = #{uuid}
+		</if>
+		<if test="failureTime!=null and failureTime!=''">
+			AND t.failure_time > #{failureTime} 
+		</if>
+		<if test="smsCode!=null and smsCode!=''">
+			AND t.sms_code = #{smsCode} 
+		</if>
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from tbl_sms_info where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM tbl_sms_info
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.SmsInfo">
+		select * from tbl_sms_info where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from tbl_sms_info where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	
+	<update id="update" parameterType="com.http.model.SmsInfo">
+		update tbl_sms_info 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="mobile != null">mobile = #{mobile}, </if>
+			<if test="signName != null">sign_name = #{signName}, </if>
+			<if test="templateCode != null">template_code = #{templateCode}, </if>
+			<if test="smsCode != null">sms_code = #{smsCode}, </if>
+			<if test="smsMessage != null">sms_message = #{smsMessage}, </if>
+			<if test="sendTime != null">send_time = #{sendTime}, </if>
+			<if test="failureTime != null">failure_time = #{failureTime}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.SmsInfo" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_sms_info ( uuid, mobile, sign_name, template_code, sms_code,
+		       sms_message, send_time, failure_time, create_time, operate_time, state
+		)
+		values ( #{uuid}, #{mobile}, #{signName}, #{templateCode}, #{smsCode},
+		         #{smsMessage}, #{sendTime}, #{failureTime}, #{createTime}, #{operateTime}, #{state}
+		)
+	</insert>
+	
+</mapper>

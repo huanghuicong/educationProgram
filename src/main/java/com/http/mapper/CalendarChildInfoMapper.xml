@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.CalendarChildInfoDao">
+	<resultMap type="com.http.model.CalendarChildInfo" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="openId" column="open_id"/> 
+		<result property="childType" column="child_type"/>
+		<result property="childName" column="child_name"/>
+	    <result property="childAge" column="child_age"/>
+	    <result property="childHeadPortrait" column="child_head_portrait"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	    <result property="lastOperate" column="last_operate"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, open_id, child_type,  child_name, child_age, child_head_portrait, create_time, operate_time, state, last_operate
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_calendar_child where id = #{id}
+	</select> 
+	
+	<select id="queryChildById"  resultMap="resultMap" parameterType="com.http.model.CalendarChildInfo">
+		select * from wechat_calendar_child where state = 0 and id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_calendar_child where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_calendar_child where state = 0
+		 
+		<if test="accountName!=null and accountName!=''">
+			 and account_name like CONCAT('%','${accountName}','%' )
+		</if>
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_calendar_child where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_calendar_child
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.CalendarChildInfo">
+		select * from wechat_calendar_child where 1=1
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_calendar_child where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<select id="queryByOpenIdandLast"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_calendar_child where 1=1 and state=0 and last_operate ='1'
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<update id="update" parameterType="com.http.model.CalendarChildInfo">
+		update wechat_calendar_child 
+		
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="openId != null">open_id = #{openId}, </if>
+			<if test="childType != null">child_type = #{childType}, </if>
+			<if test="childName != null">child_name = #{childName}, </if>
+			<if test="childAge != null">child_age = #{childAge}, </if>
+			<if test="childHeadPortrait != null">child_head_portrait = #{childHeadPortrait}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			<if test="lastOperate != null">last_operate = #{lastOperate}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.CalendarChildInfo" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_calendar_child ( uuid, open_id, child_type, child_name, child_age, child_head_portrait,
+		                               create_time, operate_time, state,last_operate
+		)
+		values ( #{uuid}, #{openId}, #{childType}, #{childName}, #{childAge}, #{childHeadPortrait},
+		         #{createTime}, #{operateTime}, #{state}, #{lastOperate}
+		)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.http.dao.CalendarCurriculumInfoDao">
+	<resultMap type="com.http.model.CalendarCurriculumInfo" id="resultMap">
+		<id property="id" column="id"/>
+		<result property="uuid" column="uuid"/> 
+		<result property="calendarChildId" column="calendar_child_id"/> 
+		<result property="curriculumName" column="curriculum_name"/>
+		<result property="curriculumType" column="curriculum_type"/>
+		<result property="curriculumTag" column="curriculum_tag"/>
+	    <result property="schoolName" column="school_name"/>
+	    <result property="remindingTime" column="reminding_time"/>
+	    <result property="createTime" column="create_time"/>
+	    <result property="operateTime" column="operate_time"/>
+	    <result property="state" column="state"/>
+	</resultMap>
+
+	<sql id="allColumns">
+		id, uuid, calendar_child_id, curriculum_name,  curriculum_type, curriculum_tag, school_name, reminding_time, create_time, operate_time, state
+	</sql>
+	 
+	<select id="queryById"  resultMap="resultMap" parameterType="java.lang.Long">
+		select * from wechat_calendar_curriculum where id = #{id}
+	</select> 
+	
+	<select id="selectById" resultMap="resultMap" parameterType="java.lang.Long">
+		SELECT * from wechat_calendar_curriculum where id=#{id}
+	</select>
+	 
+	<select id="queryList" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_calendar_curriculum where state = 0
+		 
+		<if test="accountName!=null and accountName!=''">
+			 and account_name like CONCAT('%','${accountName}','%' )
+		</if>
+	</select>
+	 
+	<update id="deleteById" parameterType="java.lang.Long">
+		delete from wechat_calendar_curriculum where id=#{id}
+	</update>
+	 
+	<select id="selectAll" resultMap="resultMap" parameterType="java.util.Map">
+		SELECT * FROM wechat_calendar_curriculum
+	</select>
+	
+	<select id="queryByObject"  resultMap="resultMap" parameterType="com.http.model.CalendarCurriculumInfo">
+		select * from wechat_calendar_curriculum where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+	</select>
+	
+	<select id="queryCurriculumInfoList"  resultMap="resultMap" parameterType="com.http.model.CalendarCurriculumInfo">
+		select * from wechat_calendar_curriculum where 1=1 and state=0
+		   <if test="id!=null and id!=''">
+				 and id = #{id}
+		   </if>
+		   <if test="calendarChildId!=null and calendarChildId!=''">
+				 and calendar_child_id = #{calendarChildId}
+		   </if>
+		   <if test="curriculumName!=null and curriculumName!=''">
+			 and curriculum_name like CONCAT('%','${curriculumName}','%' )
+		</if>
+	</select>
+	
+	<select id="queryByOpenId"  resultMap="resultMap" parameterType="java.util.Map">
+		select * from wechat_calendar_curriculum where 1=1 and state=0
+		   <if test="openId!=null and openId!=''">
+				 and open_id = #{openId}
+		   </if>
+	</select>
+	
+	<update id="update" parameterType="com.http.model.CalendarCurriculumInfo">
+		update wechat_calendar_curriculum 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="calendarChildId != null">calendar_child_id = #{calendarChildId}, </if>
+			<if test="curriculumName != null">curriculum_name = #{curriculumName}, </if>
+			<if test="curriculumType != null">curriculum_type = #{curriculumType}, </if>
+			<if test="curriculumTag != null">curriculum_tag = #{curriculumTag}, </if>
+			<if test="schoolName != null">school_name = #{schoolName}, </if>
+			<if test="remindingTime != null">reminding_time = #{remindingTime}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where id = #{id}
+	</update>  
+	
+	<update id="updateByName" parameterType="com.http.model.CalendarCurriculumInfo">
+		update wechat_calendar_curriculum 
+ 		<trim prefix="set" suffixOverrides=",">
+			<if test="uuid != null">uuid = #{uuid}, </if>
+			<if test="calendarChildId != null">calendar_child_id = #{calendarChildId}, </if>
+			<if test="curriculumName != null">curriculum_name = #{curriculumName}, </if>
+			<if test="curriculumType != null">curriculum_type = #{curriculumType}, </if>
+			<if test="curriculumTag != null">curriculum_tag = #{curriculumTag}, </if>
+			<if test="schoolName != null">school_name = #{schoolName}, </if>
+			<if test="remindingTime != null">reminding_time = #{remindingTime}, </if>
+			<if test="createTime != null">create_time = #{createTime}, </if>
+			<if test="state != null">state = #{state}, </if>
+			operate_time = #{operateTime}
+		</trim>
+		where calendar_child_id = #{calendarChildId} and curriculum_name = #{curriculumName}
+	</update>  
+	
+	<insert id="insert" parameterType="com.http.model.CalendarCurriculumInfo" 
+			useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_calendar_curriculum ( uuid, calendar_child_id, curriculum_name, curriculum_type, curriculum_tag, school_name, reminding_time,
+		                               create_time, operate_time, state
+		)
+		values ( #{uuid}, #{calendarChildId}, #{curriculumName}, #{curriculumType}, #{curriculumTag}, #{schoolName}, #{remindingTime},
+		         #{createTime}, #{operateTime}, #{state}
+		)
+	</insert>
+	
+</mapper>
