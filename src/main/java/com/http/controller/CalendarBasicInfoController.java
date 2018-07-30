@@ -134,6 +134,7 @@ public class CalendarBasicInfoController {
 		ResponseBaseModel responseBaseModel = new ResponseBaseModel();
         responseBaseModel.setResultObject(calendarBasicInfo);
         responseBaseModel.setResultTime(DateTool.parseDates(new Date())); 
+        System.out.println("cea");
 		return JSON.toJSONString(responseBaseModel);
 	}
 	
