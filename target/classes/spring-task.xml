@@ -6,9 +6,9 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
  
      <bean id="calendarTask" class="com.http.controller.CalendarTask"/>
-     <task:scheduled-tasks>
+    <!--  <task:scheduled-tasks>
         <task:scheduled ref="calendarTask" method="findCurriculumSchedule" cron="0 */3 * * * ?"/>
         <task:scheduled ref="calendarTask" method="findExpireOpenId" cron="0 0 0 */12 * ?"/>
         <task:scheduled ref="calendarTask" method="findAccessToken" cron="0 0 */1 * * ?"/>
-     </task:scheduled-tasks>
+     </task:scheduled-tasks> -->
  </beans>
