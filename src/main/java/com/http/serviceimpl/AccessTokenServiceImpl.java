@@ -5,12 +5,15 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.http.dao.AccessTokenDao;
 import com.http.model.AccessToken;
 import com.http.service.AccessTokenService;
 
 @Service
+@Transactional(isolation=Isolation.DEFAULT)
 public class AccessTokenServiceImpl implements AccessTokenService{
 
 	@Autowired

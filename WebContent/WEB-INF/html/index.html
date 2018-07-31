@@ -1,23 +1,95 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <title>主页</title>
+    <title>侃侃</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../static/layui/css/layui.css">
     
     <script language="javascript" src="../static/js/jquery-3.3.1.js"></script>
+    <script language="javascript" src="../static/layui/layui.js" charset="utf-8"></script>
     
     <script type="text/javascript">
-      
     </script>
   </head>
-  <body>
-    <div id="top" class="">
+ <body>
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header header header-demo" style="background-color:#cc99ff;">
+  <div class="layui-main" >
+    <a class="logo" >
+      <img src="../static/images/layui.png" alt="layui" style="height:20px;width:50px;float:left;margin-left:16%;margin-top:20px;">
+    </a>
+    <ul class="layui-nav" style="padding-left:10%;">
+      <li class="layui-nav-item" >
+        <a href="/doc/" style="color:black;">首页<!-- <span class="layui-badge-dot"></span> --></a> 
+      </li>
+      <li class="layui-nav-item">
+        <a href="/demo/">发现<!--  --></a>
+      </li> 
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="http://fly.layui.com/" target="_blank">话题</a>
+      </li>
 
-    </div>
-	<div id="content">
-     <button type="button" style="height:100%;width:5%;float:left;" class="btn btn-info">1搜索</button></a>
-	</div>
-  </body>
+      <li class="layui-nav-item"  >
+        <input type="text" name="title" placeholder="发现新鲜事" class="layui-input" style="height:30px;color:black;border-radius:5px;">
+      </li>
+       <li class="layui-nav-item" style="padding-left:10px;">
+       <button class="layui-btn layui-btn-normal layui-btn-sm">搜索</button>
+      </li>
+		 
+	  <li class="layui-nav-item" style="margin-left:20%;">
+		   <a href="javascript:;"><img src="http://t.cn/RCzsdCq" class="layui-nav-img">我</a>
+		   <dl class="layui-nav-child">
+		     <dd><a href="javascript:;">修改信息</a></dd>
+		     <dd><a href="javascript:;">安全管理</a></dd>
+		     <dd><a href="javascript:;">退了</a></dd>
+           </dl>
+      </li>
+    </ul>
+  </div>
+  </div>
+  <div style="height:3px;width:100%;float:left;background-color:pink;"></div>
+  
+  
+  
+  <div class="layui-main" >
+  <div style="height:10px;width:100%;float:left;"></div>
+  <div class="new-left" style="margin-left:16%;height:1000px;width:650px;float:left;"><a>23123213123</a>
+  
+  </div>
+  
+  <div class="new-right" style="height:1000px;width:300px;float:left;"><a>23123213123</a>
+  
+  </div>
+  </div>
+  
+  
+  
+  
+  <div style="height:3px;width:100%;float:left;background-color:pink;"></div>
+  <div class="layui-main" >
+  <div class="new-left" style="margin-left:16%;height:1000px;width:650px;float:left;"><a>23123213123</a>
+  
+  </div>
+  </div>
+  
+  
+</div>
+
+<script>
+layui.use('layer', function(){
+  var $ = layui.$
+  ,setIframe = function(){
+    var height = $(window).height() - 370;
+    $('#demoAdmin').height(height);
+  };
+  
+  setIframe();
+  $(window).on('resize', setIframe);
+});
+</script>
+
+</body>
+
 </html>
